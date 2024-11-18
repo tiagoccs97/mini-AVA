@@ -1,0 +1,35 @@
+-Executando os Serviços-
+
+Abra um terminal para cada serviço e navegue até a pasta correspondente.
+
+Inicie cada serviço com o comando uvicorn main:app --reload --port <porta>:
+
+Usuário: uvicorn main:app --reload --port 8001
+Conteúdo: uvicorn main:app --reload --port 8002
+Curso: uvicorn main:app --reload --port 8003
+Avaliação: uvicorn main:app --reload --port 8004
+
+-registro de usuario-
+
+Invoke-WebRequest -Uri "http://localhost:8001/register" -Method POST -Headers @{ "Content-Type" = "application/json" } -Body '{"username": "user1", "password": "pass123"}'
+
+-login de usuario-
+
+$loginResponse = Invoke-WebRequest -Uri "http://localhost:8001/login" -Method POST -Headers @{ "Content-Type" = "application/json" } -Body '{"username": "user1", "password": "pass123"}'
+$token = ($loginResponse.Content | ConvertFrom-Json).token
+
+-criacao de conteudo-
+
+Invoke-WebRequest -Uri "http://localhost:8002/content" -Method POST -Headers @{ "Content-Type" = "application/json"; "Authorization" = "Bearer $token" } -Body '{"title": "Aula de Python", "description": "Aula básica de Python", "url": "http://example.com"}'
+
+-listagem de conteudo-
+
+Invoke-WebRequest -Uri "http://localhost:8002/content" -Method GET
+
+-criacao de curso-
+
+curl -X POST "http://localhost:8003/course" -H "Content-Type: application/json" -d '{"title": "Curso de Programação", "description": "Curso introdutório", "content_ids": [1]}'
+
+-criacao de avaliacao-
+
+curl -X POST "http://localhost:8004/assessment" -H "Content-Type: application/json" -d '{"course_id": 1, "questions": [{"question": "O que é Python?", "answer": "Linguagem de programação"}]}'
